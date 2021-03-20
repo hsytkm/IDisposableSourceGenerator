@@ -5,11 +5,11 @@ using System.Collections.Generic;
 namespace IDisposableSourceGenerator.Test
 {
     [IDisposableGenerator]
-    partial class SimpleDisposer
+    partial class DefaultDisposer
     {
-        public SimpleDisposer(IDisposable disposable) => _disposables.Add(disposable);
+        public DefaultDisposer(IDisposable disposable) => _disposables.Add(disposable);
 
-        public SimpleDisposer(IEnumerable<IDisposable> disposables)
+        public DefaultDisposer(IEnumerable<IDisposable> disposables)
         {
             foreach (var d in disposables)
             {
@@ -19,45 +19,15 @@ namespace IDisposableSourceGenerator.Test
     }
 
     [IDisposableGenerator(IDisposableGeneratorOptions.None)]
-    partial class DisposerNone
+    partial class NoneOptionDisposer
     {
-        public DisposerNone(IDisposable disposable) => _disposables.Add(disposable);
-    }
-
-    [IDisposableGenerator(IDisposableGeneratorOptions.DisposeManagedObjectsMethod)]
-    partial class DisposerManaged
-    {
-        public DisposerManaged(IDisposable disposable) => _disposables.Add(disposable);
-
-        protected virtual partial void DisposeManagedObjects()
-        {
-        }
-    }
-
-    [IDisposableGenerator(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)]
-    partial class DisposerUnmanaged
-    {
-        public DisposerUnmanaged(IDisposable disposable) => _disposables.Add(disposable);
-
-        protected virtual partial void DisposeUnmanagedObjects()
-        {
-        }
-    }
-
-    [IDisposableGenerator(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
-    partial class DisposerFieldsNull
-    {
-        public DisposerFieldsNull(IDisposable disposable) => _disposables.Add(disposable);
-
-        protected virtual partial void SetLargeFieldsToNull()
-        {
-        }
+        public NoneOptionDisposer(IDisposable disposable) => _disposables.Add(disposable);
     }
 
     [IDisposableGenerator(IDisposableGeneratorOptions.DisposeManagedObjectsMethod | IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
-    partial class DisposerAllOptions
+    partial class AllOptionsDisposer
     {
-        public DisposerAllOptions(IDisposable disposable) => _disposables.Add(disposable);
+        public AllOptionsDisposer(IDisposable disposable) => _disposables.Add(disposable);
 
         protected virtual partial void DisposeManagedObjects()
         {

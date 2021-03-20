@@ -12,7 +12,7 @@ namespace IDisposableSourceGenerator.Test
             var d = new DisposableObject();
 
             d.IsDisposed.IsFalse();
-            using (var reader = new SimpleDisposer(d)) { }
+            using (var reader = new DefaultDisposer(d)) { }
             d.IsDisposed.IsTrue();
         }
 
@@ -22,7 +22,7 @@ namespace IDisposableSourceGenerator.Test
             var ds = Enumerable.Range(0, 10).Select(_ => new DisposableObject()).ToArray();
 
             ds.Select(x => x.IsDisposed).All(x => !x).IsTrue();
-            using (var reader = new SimpleDisposer(ds)) { }
+            using (var reader = new DefaultDisposer(ds)) { }
             ds.Select(x => x.IsDisposed).All(x => x).IsTrue();
         }
 

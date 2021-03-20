@@ -1,7 +1,4 @@
-﻿#pragma warning disable IDE0057
-#pragma warning disable CA1822
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
@@ -10,13 +7,6 @@ using System.Text;
 
 namespace IDisposableSourceGenerator
 {
-    static class StringExtension
-    {
-        //public static string ToLowerOnlyFirst(this string str) => Char.ToLower(str[0]) + str.Substring(1);
-        //public static string ToUpperOnlyFirst(this string str) => Char.ToUpper(str[0]) + str.Substring(1);
-        //public static string JoinWithCommas(this IEnumerable<string> ss) => string.Join(", ", ss);
-    }
-
     static class RoslynExtension
     {
         // Code from: https://github.com/YairHalberstadt/stronginject/blob/779a38e7e74b92c87c86ded5d1fef55744d34a83/StrongInject/Generator/RoslynExtensions.cs#L166
@@ -51,8 +41,6 @@ namespace IDisposableSourceGenerator
             stringBuilder.Append(".g.cs");
             return stringBuilder.ToString();
         }
-
-        //public static string? NullIfEmpty(this string? value) => string.IsNullOrEmpty(value) ? null : value;
     }
 
     static class SyntaxExtension
