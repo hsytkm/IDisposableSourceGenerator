@@ -15,28 +15,21 @@ namespace <#= Namespace #>
 {
     partial class <#= ClassName #> : System.IDisposable
     {
-        internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new();
+        internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new IDisposableSourceGenerator.CompositeDisposable();
         private bool _disposedValue = false;
-
-<# if (HasFlag(IDisposableGeneratorOptions.DisposeManagedObjectsMethod)) { #>
-        // Dispose managed objects when after CompositeDisposable is disposed.
-        protected virtual partial void DisposeManagedObjects();     //IDisposableGeneratorOptions.DisposeManagedObjectsMethod
-<# } else { #>
-        //protected virtual partial void DisposeManagedObjects();   //IDisposableGeneratorOptions.DisposeManagedObjectsMethod
-<# } #>
 
         // Dispose unmanaged objects when Dispose() or finalizer is invoked.
 <# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>
-        protected virtual partial void DisposeUnmanagedObjects();   //IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod
+        protected virtual partial void DisposeUnmanagedObjects();   // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } else { #>
-        //protected virtual partial void DisposeUnmanagedObjects(); //IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod
+        //protected virtual partial void DisposeUnmanagedObjects(); // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } #>
 
         // Set large fields to null when Dispose() or finalizer is invoked.
 <# if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { #>
-        protected virtual partial void SetLargeFieldsToNull();      //IDisposableGeneratorOptions.SetLargeFieldsToNullMethod
+        protected virtual partial void SetLargeFieldsToNull();      // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
 <# } else { #>
-        //protected virtual partial void SetLargeFieldsToNull();    //IDisposableGeneratorOptions.SetLargeFieldsToNullMethod
+        //protected virtual partial void SetLargeFieldsToNull();    // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
 <# } #>
 
         protected virtual void Dispose(bool disposing)
@@ -47,26 +40,20 @@ namespace <#= Namespace #>
             {
                 // TODO: dispose managed state (managed objects).
                 _disposables.Dispose();
-
-<# if (HasFlag(IDisposableGeneratorOptions.DisposeManagedObjectsMethod)) { #>
-                DisposeManagedObjects();     //IDisposableGeneratorOptions.DisposeManagedObjectsMethod
-<# } else { #>
-                //DisposeManagedObjects();   //IDisposableGeneratorOptions.DisposeManagedObjectsMethod
-<# } #>
             }
 
             // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
 <# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>
-            DisposeUnmanagedObjects();      //IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod
+            DisposeUnmanagedObjects();      // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } else { #>
-            //DisposeUnmanagedObjects();    //IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod
+            //DisposeUnmanagedObjects();    // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } #>
 
             // TODO: set large fields to null.
 <# if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { #>
-            SetLargeFieldsToNull();     //IDisposableGeneratorOptions.SetLargeFieldsToNullMethod
+            SetLargeFieldsToNull();         // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
 <# } else { #>
-            //SetLargeFieldsToNull();   //IDisposableGeneratorOptions.SetLargeFieldsToNullMethod
+            //SetLargeFieldsToNull();       // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
 <# } #>
 
             _disposedValue = true;
@@ -78,10 +65,10 @@ namespace <#= Namespace #>
             Dispose(disposing: false);
         }
 <# } else { #>
-        // ~<#= ClassName #>()
-        // {
-        //     Dispose(disposing: false);
-        // }
+        //~<#= ClassName #>()
+        //{
+        //    Dispose(disposing: false);
+        //}
 <# } #>
 
         public void Dispose()

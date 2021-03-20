@@ -5,11 +5,15 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
 
+    <!-- does not need runtime self -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+
     <Title>IDisposableSourceGenerator</Title>
-    <Description>Implement IDisposable pattern using SourceGenerator.</Description>
+    <Description>Implement the dispose pattern using SourceGenerator.</Description>
     <AssemblyName>IDisposableSourceGenerator</AssemblyName>
     <RootNamespace>IDisposableSourceGenerator</RootNamespace>
-    <Version>0.0.1.0</Version>
+    <Version>0.0.2</Version>
     <Authors>myoga</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hsytkm/IDisposableSourceGenerator</PackageProjectUrl>
@@ -19,6 +23,11 @@
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Create nuget package as analyzer -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" PrivateAssets="all" />

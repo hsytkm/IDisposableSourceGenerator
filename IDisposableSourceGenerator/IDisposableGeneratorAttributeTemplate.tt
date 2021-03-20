@@ -27,9 +27,8 @@ namespace IDisposableSourceGenerator
     internal enum IDisposableGeneratorOptions
     {
         None = 0x0000,
-        DisposeManagedObjectsMethod = 0x0001,
-        DisposeUnmanagedObjectsMethod = 0x0002,
-        SetLargeFieldsToNullMethod = 0x0004,
+        DisposeUnmanagedObjectsMethod = 0x0001,
+        SetLargeFieldsToNullMethod = 0x0002,
     }
 
     /// <summary>

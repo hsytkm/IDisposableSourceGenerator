@@ -24,22 +24,13 @@ namespace IDisposableSourceGenerator.Test
         public NoneOptionDisposer(IDisposable disposable) => _disposables.Add(disposable);
     }
 
-    [IDisposableGenerator(IDisposableGeneratorOptions.DisposeManagedObjectsMethod | IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+    [IDisposableGenerator(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
     partial class AllOptionsDisposer
     {
         public AllOptionsDisposer(IDisposable disposable) => _disposables.Add(disposable);
 
-        protected virtual partial void DisposeManagedObjects()
-        {
-        }
-
-        protected virtual partial void DisposeUnmanagedObjects()
-        {
-        }
-
-        protected virtual partial void SetLargeFieldsToNull()
-        {
-        }
+        protected virtual partial void DisposeUnmanagedObjects() { }
+        protected virtual partial void SetLargeFieldsToNull() { }
     }
 
 }

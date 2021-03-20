@@ -16,5 +16,6 @@ namespace IDisposableSourceGenerator
 
         internal bool HasFlag(IDisposableGeneratorOptions options) => Options.HasFlag(options);
 
+        internal static string ToFullName(IDisposableGeneratorOptions options) => $"{nameof(IDisposableGeneratorOptions)}.{options}";
     }
 }
