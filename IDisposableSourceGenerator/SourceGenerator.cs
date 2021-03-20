@@ -33,13 +33,13 @@ namespace IDisposableSourceGenerator
             {
                 if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
 
-                foreach (var classDeclaration in receiver.Targets)
+                foreach (var (classDeclaration, options) in receiver.Targets)
                 {
                     var model = context.Compilation.GetSemanticModel(classDeclaration.SyntaxTree);
                     var typeSymbol = model.GetDeclaredSymbol(classDeclaration);
                     if (typeSymbol is null) continue;
 
-                    var template = new CodeTemplate(classDeclaration)
+                    var template = new CodeTemplate(classDeclaration, options)
                     {
                         Namespace = typeSymbol.ContainingNamespace.ToDisplayString(),
                     };
@@ -56,17 +56,34 @@ namespace IDisposableSourceGenerator
 
         private sealed class SyntaxReceiver : ISyntaxReceiver
         {
-            internal List<ClassDeclarationSyntax> Targets { get; } = new();
+            internal List<(ClassDeclarationSyntax classDeclaration, IDisposableGeneratorOptions options)> Targets { get; } = new();
 
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {
                 if (syntaxNode is not ClassDeclarationSyntax classDeclaration) return;
 
                 var attr = classDeclaration.AttributeLists.SelectMany(x => x.Attributes)
-                    .FirstOrDefault(x => x.ToString() is nameof(IDisposableGenerator) or AttributeName);
+                    .FirstOrDefault(x => x.Name.ToString() is nameof(IDisposableGenerator) or AttributeName);
                 if (attr is null) return;
 
-                Targets.Add(classDeclaration);
+                var options = GetOptionsFromAttribute(classDeclaration);
+
+                Targets.Add((classDeclaration, options));
+            }
+
+            private static IDisposableGeneratorOptions GetOptionsFromAttribute(ClassDeclarationSyntax classDeclaration)
+            {
+                var attr = classDeclaration.AttributeLists.SelectMany(x => x.Attributes)
+                    .FirstOrDefault(x => x.Name.ToString() is nameof(IDisposableGenerator) or AttributeName);
+
+                var argSyntax = attr?.ArgumentList?.Arguments.FirstOrDefault();
+                if (argSyntax is null) return IDisposableGeneratorOptions.None;
+
+                // e.g. Options.Flag0 | Options.Flag1 => Flag0 , Flag1
+                var parsed = Enum.Parse(typeof(IDisposableGeneratorOptions),
+                    argSyntax.Expression.ToString().Replace(nameof(IDisposableGeneratorOptions) + ".", "").Replace("|", ","));
+
+                return (IDisposableGeneratorOptions)parsed;
             }
         }
     }

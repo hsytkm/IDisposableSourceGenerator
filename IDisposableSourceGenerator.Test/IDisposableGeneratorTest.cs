@@ -4,7 +4,7 @@ using Xunit;
 
 namespace IDisposableSourceGenerator.Test
 {
-    public class UnitTest1
+    public class IDisposableGeneratorTest
     {
         [Fact]
         public void DisposeItem()
@@ -12,7 +12,7 @@ namespace IDisposableSourceGenerator.Test
             var d = new DisposableObject();
 
             d.IsDisposed.IsFalse();
-            using (var reader = new MyDisposer(d)) { }
+            using (var reader = new SimpleDisposer(d)) { }
             d.IsDisposed.IsTrue();
         }
 
@@ -22,7 +22,7 @@ namespace IDisposableSourceGenerator.Test
             var ds = Enumerable.Range(0, 10).Select(_ => new DisposableObject()).ToArray();
 
             ds.Select(x => x.IsDisposed).All(x => !x).IsTrue();
-            using (var reader = new MyDisposer(ds)) { }
+            using (var reader = new SimpleDisposer(ds)) { }
             ds.Select(x => x.IsDisposed).All(x => x).IsTrue();
         }
 

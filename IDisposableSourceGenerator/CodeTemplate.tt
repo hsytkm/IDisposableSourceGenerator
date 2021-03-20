@@ -16,41 +16,76 @@ namespace <#= Namespace #>
     partial class <#= ClassName #> : System.IDisposable
     {
         internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new();
+        private bool _disposedValue = false;
 
-        //private partial void DisposeUnmanagedObjects();
-        //private partial void DisposeManagedObjects();
-
-        private bool disposedValue;
+<# if (HasFlag(IDisposableGeneratorOptions.DisposeManagedObjectsMethod)) { #>
+        protected virtual partial void DisposeManagedObjects();     //IDisposableGeneratorOptions.DisposeManagedObjectsMethod
+<# } else { #>
+        //protected virtual partial void DisposeManagedObjects();   //IDisposableGeneratorOptions.DisposeManagedObjectsMethod
+<# } #>
+<# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>
+        protected virtual partial void DisposeUnmanagedObjects();   //IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod
+<# } else { #>
+        //protected virtual partial void DisposeUnmanagedObjects(); //IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod
+<# } #>
+<# if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { #>
+        protected virtual partial void SetLargeFieldsToNull();      //IDisposableGeneratorOptions.SetLargeFieldsToNullMethod
+<# } else { #>
+        //protected virtual partial void SetLargeFieldsToNull();    //IDisposableGeneratorOptions.SetLargeFieldsToNullMethod
+<# } #>
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (_disposedValue) return;
+
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // TODO: マネージド状態を破棄します (マネージド オブジェクト)
-                    //DisposeUnmanagedObjects();
-                }
-
-                // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
-                // TODO: 大きなフィールドを null に設定します
+                // TODO: dispose managed state (managed objects).
+                // TODO: マネージド状態を破棄します (マネージド オブジェクト)
+<# if (HasFlag(IDisposableGeneratorOptions.DisposeManagedObjectsMethod)) { #>
+                DisposeManagedObjects();
+<# } else { #>
                 //DisposeManagedObjects();
-                _disposables.Dispose();
+<# } #>
 
-                disposedValue = true;
+                _disposables.Dispose();
             }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+            // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
+<# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>
+            DisposeUnmanagedObjects();
+<# } else { #>
+            //DisposeUnmanagedObjects();
+<# } #>
+
+            // TODO: set large fields to null.
+            // TODO: 大きなフィールドを null に設定します
+<# if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { #>
+            SetLargeFieldsToNull();
+<# } else { #>
+            //SetLargeFieldsToNull();
+<# } #>
+
+            _disposedValue = true;
         }
 
+<# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) || HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { #>
+        // TODO: 'Dispose(bool disposing)' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします
+        ~<#= ClassName #>()
+        {
+            Dispose(disposing: false);
+        }
+<# } else { #>
         // // TODO: 'Dispose(bool disposing)' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします
         // ~<#= ClassName #>()
         // {
-        //     // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
         //     Dispose(disposing: false);
         // }
+<# } #>
 
         public void Dispose()
         {
-            // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
             Dispose(disposing: true);
             System.GC.SuppressFinalize(this);
         }

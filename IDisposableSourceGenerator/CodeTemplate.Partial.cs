@@ -6,10 +6,15 @@ namespace IDisposableSourceGenerator
     {
         internal string Namespace { get; set; } = "";
         internal string ClassName { get; }
+        internal IDisposableGeneratorOptions Options { get; }
 
-        internal CodeTemplate(ClassDeclarationSyntax classDeclaration)
+        internal CodeTemplate(ClassDeclarationSyntax classDeclaration, IDisposableGeneratorOptions options)
         {
             ClassName = classDeclaration.GetGenericTypeName();
+            Options = options;
         }
+
+        internal bool HasFlag(IDisposableGeneratorOptions options) => Options.HasFlag(options);
+
     }
 }

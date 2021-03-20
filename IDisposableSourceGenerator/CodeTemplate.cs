@@ -34,52 +34,74 @@ namespace IDisposableSourceGenerator
  } 
             this.Write("{\r\n    partial class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
-            this.Write(@" : System.IDisposable
-    {
-        internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new();
-
-        //private partial void DisposeUnmanagedObjects();
-        //private partial void DisposeManagedObjects();
-
-        private bool disposedValue;
-
+            this.Write(" : System.IDisposable\r\n    {\r\n        internal readonly IDisposableSourceGenerato" +
+                    "r.CompositeDisposable _disposables = new();\r\n        private bool _disposedValue" +
+                    " = false;\r\n\r\n");
+ if (HasFlag(IDisposableGeneratorOptions.DisposeManagedObjectsMethod)) { 
+            this.Write("        protected virtual partial void DisposeManagedObjects();     //IDisposable" +
+                    "GeneratorOptions.DisposeManagedObjectsMethod\r\n");
+ } else { 
+            this.Write("        //protected virtual partial void DisposeManagedObjects();   //IDisposable" +
+                    "GeneratorOptions.DisposeManagedObjectsMethod\r\n");
+ } 
+ if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { 
+            this.Write("        protected virtual partial void DisposeUnmanagedObjects();   //IDisposable" +
+                    "GeneratorOptions.DisposeUnmanagedObjectsMethod\r\n");
+ } else { 
+            this.Write("        //protected virtual partial void DisposeUnmanagedObjects(); //IDisposable" +
+                    "GeneratorOptions.DisposeUnmanagedObjectsMethod\r\n");
+ } 
+ if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { 
+            this.Write("        protected virtual partial void SetLargeFieldsToNull();      //IDisposable" +
+                    "GeneratorOptions.SetLargeFieldsToNullMethod\r\n");
+ } else { 
+            this.Write("        //protected virtual partial void SetLargeFieldsToNull();    //IDisposable" +
+                    "GeneratorOptions.SetLargeFieldsToNullMethod\r\n");
+ } 
+            this.Write(@"
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (_disposedValue) return;
+
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // TODO: マネージド状態を破棄します (マネージド オブジェクト)
-                    //DisposeUnmanagedObjects();
-                }
-
-                // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
-                // TODO: 大きなフィールドを null に設定します
-                //DisposeManagedObjects();
-                _disposables.Dispose();
-
-                disposedValue = true;
-            }
-        }
-
-        // // TODO: 'Dispose(bool disposing)' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします
-        // ~");
-            this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
-            this.Write(@"()
-        // {
-        //     // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
-        {
-            // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
-            Dispose(disposing: true);
-            System.GC.SuppressFinalize(this);
-        }
-    }
-}
+                // TODO: dispose managed state (managed objects).
+                // TODO: マネージド状態を破棄します (マネージド オブジェクト)
 ");
+ if (HasFlag(IDisposableGeneratorOptions.DisposeManagedObjectsMethod)) { 
+            this.Write("                DisposeManagedObjects();\r\n");
+ } else { 
+            this.Write("                //DisposeManagedObjects();\r\n");
+ } 
+            this.Write("\r\n                _disposables.Dispose();\r\n            }\r\n\r\n            // TODO: " +
+                    "free unmanaged resources (unmanaged objects) and override a finalizer below.\r\n  " +
+                    "          // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします\r\n");
+ if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { 
+            this.Write("            DisposeUnmanagedObjects();\r\n");
+ } else { 
+            this.Write("            //DisposeUnmanagedObjects();\r\n");
+ } 
+            this.Write("\r\n            // TODO: set large fields to null.\r\n            // TODO: 大きなフィールドを " +
+                    "null に設定します\r\n");
+ if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { 
+            this.Write("            SetLargeFieldsToNull();\r\n");
+ } else { 
+            this.Write("            //SetLargeFieldsToNull();\r\n");
+ } 
+            this.Write("\r\n            _disposedValue = true;\r\n        }\r\n\r\n");
+ if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) || HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { 
+            this.Write("        // TODO: \'Dispose(bool disposing)\' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライ" +
+                    "ザーをオーバーライドします\r\n        ~");
+            this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
+            this.Write("()\r\n        {\r\n            Dispose(disposing: false);\r\n        }\r\n");
+ } else { 
+            this.Write("        // // TODO: \'Dispose(bool disposing)\' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイ" +
+                    "ナライザーをオーバーライドします\r\n        // ~");
+            this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
+            this.Write("()\r\n        // {\r\n        //     Dispose(disposing: false);\r\n        // }\r\n");
+ } 
+            this.Write("\r\n        public void Dispose()\r\n        {\r\n            Dispose(disposing: true);" +
+                    "\r\n            System.GC.SuppressFinalize(this);\r\n        }\r\n    }\r\n}\r\n");
             return this.GenerationEnvironment.ToString();
         }
     }
