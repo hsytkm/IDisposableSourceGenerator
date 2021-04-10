@@ -4,25 +4,29 @@ using Xunit;
 namespace IDisposableSourceGenerator.Test
 {
 
-    [IDisposableGenerator(null, "_myDisposables", IDisposableGeneratorOptions.None)]
-    partial class NamePropertyDisposer
+    [IDisposableGenerator(typeof(System.Reactive.Disposables.CompositeDisposable), "_reactiveDisposable", IDisposableGeneratorOptions.None)]
+    partial class TypePropertyDisposer
     {
         private readonly DisposableObject _obj;
 
-        public NamePropertyDisposer(DisposableObject d)
+        public TypePropertyDisposer(DisposableObject d)
         {
             _obj = d;
-            _myDisposables.Add(d);  // set field name
+            
+            if (_reactiveDisposable.GetType() == typeof(System.Reactive.Disposables.CompositeDisposable))
+            {
+                _reactiveDisposable.Add(d);  // set field name
+            }
         }
     }
 
-    public class NamePropertyTest
+    public class TypePropertyTest
     {
         [Fact]
         public void WhenDispose()
         {
             var d = new DisposableObject();
-            var disposer = new NamePropertyDisposer(d);
+            var disposer = new TypePropertyDisposer(d);
 
             d.IsDisposed.IsFalse();
             disposer.Dispose();
@@ -33,7 +37,7 @@ namespace IDisposableSourceGenerator.Test
         public void DonotWork()
         {
             var d = new DisposableObject();
-            var disposer = new NamePropertyDisposer(d);
+            var disposer = new TypePropertyDisposer(d);
 
             d.IsDisposed.IsFalse();
             disposer.Dispose();

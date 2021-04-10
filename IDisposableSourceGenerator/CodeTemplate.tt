@@ -13,9 +13,9 @@ using System;
 namespace <#= Namespace #>
 <# } #>
 {
-    partial class <#= ClassName #> : System.IDisposable
+    partial class <#= ClassName #> : IDisposable
     {
-        internal readonly IDisposableSourceGenerator.CompositeDisposable <#= CompositeDisposableFieldName #> = new IDisposableSourceGenerator.CompositeDisposable();
+        internal readonly <#= CompositeDisposableTypeName #> <#= CompositeDisposableFieldName #> = new();
         private bool _disposedValue = false;
 
         // Dispose unmanaged objects when Dispose() or finalizer is invoked.
@@ -38,21 +38,23 @@ namespace <#= Namespace #>
 
             if (disposing)
             {
-                // TODO: dispose managed state (managed objects).
+                // dispose managed state (managed objects).
                 <#= CompositeDisposableFieldName #>.Dispose();
             }
 
-            // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
 <# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>
+            // free unmanaged resources (unmanaged objects) and override a finalizer below.
             DisposeUnmanagedObjects();      // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } else { #>
+            // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
             //DisposeUnmanagedObjects();    // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } #>
 
-            // TODO: set large fields to null.
 <# if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { #>
+            // set large fields to null.
             SetLargeFieldsToNull();         // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
 <# } else { #>
+            // TODO: set large fields to null.
             //SetLargeFieldsToNull();       // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
 <# } #>
 
@@ -74,7 +76,7 @@ namespace <#= Namespace #>
         public void Dispose()
         {
             Dispose(disposing: true);
-            System.GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

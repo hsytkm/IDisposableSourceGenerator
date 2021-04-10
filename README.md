@@ -20,7 +20,7 @@ Then the boilerplate code for the disposable pattern will be generated.
 ``` csharp
 partial class Foo : System.IDisposable
 {
-    internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new IDisposableSourceGenerator.CompositeDisposable();
+    internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new();
     private bool _disposedValue = false;
 
     protected virtual void Dispose(bool disposing)
@@ -53,13 +53,43 @@ partial class Foo : System.IDisposable
 
 Generator declare a `_disposables` field of `CompositeDisposable` type . You can add disposable objects with it.
 
-(The field name `_disposables` can be changed with a generator argument. see **DisposableFieldName**.)
+(The field name `_disposables` can be changed with a generator argument. see **CompositeDisposableFieldName**.)
 
 ``` csharp
 [IDisposableGenerator]
 partial class Foo {
     public Foo(IDisposable d) {
         _disposables.Add(d);    // d will be automatically disposed.
+    }
+}
+```
+
+## CompositeDisposableType
+
+You can specify the type of `CompositeDisposable`.
+
+If you don't specified or set null, the default class `IDisposableSourceGenerator.CompositeDisposable` in the source generator is used.
+
+``` csharp
+[IDisposableGenerator(typeof(System.Reactive.Disposables.CompositeDisposable))]
+partial class Foo {
+    public Foo(IDisposable d) {
+        _disposables.Add(d);  // GetType() == typeof(System.Reactive.Disposables.CompositeDisposable)
+    }
+}
+```
+
+## CompositeDisposableFieldName
+
+You can change the name of `CompositeDisposable` field.  Default name is `_disposables`.
+
+If filed name is null or whitespace, it named `_disposable`.
+
+``` csharp
+[IDisposableGenerator(null, "compositeDisposable")]  // CompositeDisposable type is default.
+partial class Foo {
+    public Foo(IDisposable d) {
+        compositeDisposable.Add(d);  // The name specified in the argument.
     }
 }
 ```
@@ -80,7 +110,7 @@ internal enum IDisposableGeneratorOptions {
 Of course,  each option can be set simultaneously.
 
 ```csharp
-[IDisposableGenerator(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+[IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
 partial class Foo {
     ...
 }
@@ -93,7 +123,7 @@ If you want to release some unmanaged objects, you can use the `IDisposableGener
 This option enables the `DisposeUnmanagedObjects` method and Finalizer. It will be called from the `Dispose` method or Finalizer.
 
 ``` csharp
-[IDisposableGenerator(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)]
+[IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)]
 partial class Foo {
     protected virtual partial void DisposeUnmanagedObjects()
     {
@@ -114,19 +144,6 @@ partial class Foo {
     protected virtual partial void SetLargeFieldsToNull()
     {
         // set some large fields to null in this.
-    }
-}
-```
-
-## DisposableFieldName
-
-You can change the name of `CompositeDisposable` field.  Default name is `_disposables`.
-
-``` csharp
-[IDisposableGenerator(IDisposableGeneratorOptions.None, "compositeDisposable")]
-partial class Foo {
-    public Foo(IDisposable d) {
-        compositeDisposable.Add(d);   // The name specified in the argument.
     }
 }
 ```

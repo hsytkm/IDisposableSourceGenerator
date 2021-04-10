@@ -76,8 +76,9 @@ namespace IDisposableSourceGenerator
 
     internal record GeneratorArgument
     {
-        public IDisposableGeneratorOptions Options { get; }
+        public ITypeSymbol? CompositeDisposableTypeSymbol { get; }
         public string? CompositeDisposableFieldName { get; }
+        public IDisposableGeneratorOptions Options { get; }
 
         public GeneratorArgument(SemanticModel model, AttributeSyntax attributeSyntax)
         {
@@ -89,13 +90,21 @@ namespace IDisposableSourceGenerator
                 var arg = attrArgs[i];
                 var expr = arg.Expression;
 
-                if (i == 0)     // UnitGenerateOptions options
+                if (i == 0)    // Type
                 {
-                    Options = GetOptions(arg);
+                    ITypeSymbol? typeSymbol = null;
+                    if (expr is TypeOfExpressionSyntax typeOfExpr)
+                        typeSymbol = model.GetSymbolInfo(typeOfExpr.Type).Symbol as ITypeSymbol;
+
+                    CompositeDisposableTypeSymbol = typeSymbol;
                 }
-                else if (i == 1)    // string toStringFormat
+                else if (i == 1)    // string
                 {
                     CompositeDisposableFieldName = model.GetConstantValue(expr).Value?.ToString();
+                }
+                else if (i == 2)    // IDisposableGeneratorOptions
+                {
+                    Options = GetOptions(arg);
                 }
             }
         }

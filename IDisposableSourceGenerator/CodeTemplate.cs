@@ -34,12 +34,12 @@ namespace IDisposableSourceGenerator
  } 
             this.Write("{\r\n    partial class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
-            this.Write(" : System.IDisposable\r\n    {\r\n        internal readonly IDisposableSourceGenerato" +
-                    "r.CompositeDisposable ");
+            this.Write(" : IDisposable\r\n    {\r\n        internal readonly ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableTypeName));
+            this.Write(" ");
             this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableFieldName));
-            this.Write(" = new IDisposableSourceGenerator.CompositeDisposable();\r\n        private bool _d" +
-                    "isposedValue = false;\r\n\r\n        // Dispose unmanaged objects when Dispose() or " +
-                    "finalizer is invoked.\r\n");
+            this.Write(" = new();\r\n        private bool _disposedValue = false;\r\n\r\n        // Dispose unm" +
+                    "anaged objects when Dispose() or finalizer is invoked.\r\n");
  if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { 
             this.Write("        protected virtual partial void DisposeUnmanagedObjects();   // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)));
@@ -61,26 +61,29 @@ namespace IDisposableSourceGenerator
  } 
             this.Write("\r\n        protected virtual void Dispose(bool disposing)\r\n        {\r\n            " +
                     "if (_disposedValue) return;\r\n\r\n            if (disposing)\r\n            {\r\n      " +
-                    "          // TODO: dispose managed state (managed objects).\r\n                ");
+                    "          // dispose managed state (managed objects).\r\n                ");
             this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableFieldName));
-            this.Write(".Dispose();\r\n            }\r\n\r\n            // TODO: free unmanaged resources (unma" +
-                    "naged objects) and override a finalizer below.\r\n");
+            this.Write(".Dispose();\r\n            }\r\n\r\n");
  if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { 
-            this.Write("            DisposeUnmanagedObjects();      // ");
+            this.Write("            // free unmanaged resources (unmanaged objects) and override a finali" +
+                    "zer below.\r\n            DisposeUnmanagedObjects();      // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)));
             this.Write("\r\n");
  } else { 
-            this.Write("            //DisposeUnmanagedObjects();    // ");
+            this.Write("            // TODO: free unmanaged resources (unmanaged objects) and override a " +
+                    "finalizer below.\r\n            //DisposeUnmanagedObjects();    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)));
             this.Write("\r\n");
  } 
-            this.Write("\r\n            // TODO: set large fields to null.\r\n");
+            this.Write("\r\n");
  if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { 
-            this.Write("            SetLargeFieldsToNull();         // ");
+            this.Write("            // set large fields to null.\r\n            SetLargeFieldsToNull();    " +
+                    "     // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)));
             this.Write("\r\n");
  } else { 
-            this.Write("            //SetLargeFieldsToNull();       // ");
+            this.Write("            // TODO: set large fields to null.\r\n            //SetLargeFieldsToNul" +
+                    "l();       // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)));
             this.Write("\r\n");
  } 
@@ -95,7 +98,7 @@ namespace IDisposableSourceGenerator
             this.Write("()\r\n        //{\r\n        //    Dispose(disposing: false);\r\n        //}\r\n");
  } 
             this.Write("\r\n        public void Dispose()\r\n        {\r\n            Dispose(disposing: true);" +
-                    "\r\n            System.GC.SuppressFinalize(this);\r\n        }\r\n    }\r\n}\r\n");
+                    "\r\n            GC.SuppressFinalize(this);\r\n        }\r\n    }\r\n}\r\n");
             return this.GenerationEnvironment.ToString();
         }
     }

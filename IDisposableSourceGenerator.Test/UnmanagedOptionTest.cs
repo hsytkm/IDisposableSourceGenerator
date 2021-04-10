@@ -4,7 +4,7 @@ using Xunit;
 namespace IDisposableSourceGenerator.Test
 {
 
-    [IDisposableGenerator(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)]
+    [IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)]
     partial class UnmanagedOptionDisposer
     {
         private readonly DisposableObject _obj;

@@ -18,13 +18,13 @@ namespace IDisposableSourceGenerator.Test
         }
     }
 
-    [IDisposableGenerator(IDisposableGeneratorOptions.None)]
+    [IDisposableGenerator(null, null, IDisposableGeneratorOptions.None)]
     partial class NoneOptionDisposer
     {
         public NoneOptionDisposer(IDisposable disposable) => _disposables.Add(disposable);
     }
 
-    [IDisposableGenerator(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+    [IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
     partial class AllOptionsDisposer
     {
         public AllOptionsDisposer(IDisposable disposable) => _disposables.Add(disposable);
