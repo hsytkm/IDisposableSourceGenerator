@@ -53,17 +53,16 @@ partial class Foo : System.IDisposable
 
 Generator declare a `_disposables` field of `CompositeDisposable` type . You can add disposable objects with it.
 
+(The field name `_disposables` can be changed with a generator argument. see **DisposableFieldName**.)
+
 ``` csharp
 [IDisposableGenerator]
 partial class Foo {
-    public Foo(IDisposable d)
-    {
+    public Foo(IDisposable d) {
         _disposables.Add(d);    // d will be automatically disposed.
     }
 }
 ```
-
-
 
 ## IDisposableGeneratorOptions
 
@@ -71,8 +70,7 @@ Generator generates the `IDisposableGeneratorOptions` that has bit flags of whic
 
 ```csharp
 [Flags]
-internal enum IDisposableGeneratorOptions
-{
+internal enum IDisposableGeneratorOptions {
     None = 0x0000,
     DisposeUnmanagedObjectsMethod = 0x0001,
     SetLargeFieldsToNullMethod = 0x0002,
@@ -116,6 +114,19 @@ partial class Foo {
     protected virtual partial void SetLargeFieldsToNull()
     {
         // set some large fields to null in this.
+    }
+}
+```
+
+## DisposableFieldName
+
+You can change the name of `CompositeDisposable` field.  Default name is `_disposables`.
+
+``` csharp
+[IDisposableGenerator(IDisposableGeneratorOptions.None, "compositeDisposable")]
+partial class Foo {
+    public Foo(IDisposable d) {
+        compositeDisposable.Add(d);   // The name specified in the argument.
     }
 }
 ```

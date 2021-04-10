@@ -16,10 +16,12 @@ namespace IDisposableSourceGenerator
     internal sealed class IDisposableGeneratorAttribute : Attribute
     {
         public IDisposableGeneratorOptions Options { get; }
+        public string CompositeDisposableFieldName { get; }
 
-        public IDisposableGeneratorAttribute(IDisposableGeneratorOptions options = IDisposableGeneratorOptions.None)
+        public IDisposableGeneratorAttribute(IDisposableGeneratorOptions options = IDisposableGeneratorOptions.None, string compositeDisposableFieldName = "_disposables")
         {
             this.Options = options;
+            this.CompositeDisposableFieldName = compositeDisposableFieldName;
         }
     }
 

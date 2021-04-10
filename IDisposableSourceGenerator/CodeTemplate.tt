@@ -15,7 +15,7 @@ namespace <#= Namespace #>
 {
     partial class <#= ClassName #> : System.IDisposable
     {
-        internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new IDisposableSourceGenerator.CompositeDisposable();
+        internal readonly IDisposableSourceGenerator.CompositeDisposable <#= CompositeDisposableFieldName #> = new IDisposableSourceGenerator.CompositeDisposable();
         private bool _disposedValue = false;
 
         // Dispose unmanaged objects when Dispose() or finalizer is invoked.
@@ -39,7 +39,7 @@ namespace <#= Namespace #>
             if (disposing)
             {
                 // TODO: dispose managed state (managed objects).
-                _disposables.Dispose();
+                <#= CompositeDisposableFieldName #>.Dispose();
             }
 
             // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

@@ -33,16 +33,19 @@ namespace IDisposableSourceGenerator
             {
                 if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
 
-                foreach (var (classDeclaration, options) in receiver.Targets)
+                foreach (var (classDeclaration, attributeSyntax) in receiver.Targets)
                 {
                     var model = context.Compilation.GetSemanticModel(classDeclaration.SyntaxTree);
                     var typeSymbol = model.GetDeclaredSymbol(classDeclaration);
                     if (typeSymbol is null) continue;
 
-                    var template = new CodeTemplate(classDeclaration, options)
+                    var genArgs = new GeneratorArgument(model, attributeSyntax);
+                    var template = new CodeTemplate(classDeclaration, genArgs)
                     {
                         Namespace = typeSymbol.ContainingNamespace.ToDisplayString(),
                     };
+
+                    if (context.CancellationToken.IsCancellationRequested) return;
 
                     var text = template.TransformText();
                     context.AddSource(typeSymbol.GenerateHintName(), text);
@@ -56,7 +59,7 @@ namespace IDisposableSourceGenerator
 
         private sealed class SyntaxReceiver : ISyntaxReceiver
         {
-            internal List<(ClassDeclarationSyntax classDeclaration, IDisposableGeneratorOptions options)> Targets { get; } = new();
+            internal List<(ClassDeclarationSyntax classDeclaration, AttributeSyntax attributeSyntax)> Targets { get; } = new();
 
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {
@@ -66,25 +69,46 @@ namespace IDisposableSourceGenerator
                     .FirstOrDefault(x => x.Name.ToString() is nameof(IDisposableGenerator) or AttributeName);
                 if (attr is null) return;
 
-                var options = GetOptionsFromAttribute(classDeclaration);
-
-                Targets.Add((classDeclaration, options));
+                Targets.Add((classDeclaration, attr));
             }
+        }
+    }
 
-            private static IDisposableGeneratorOptions GetOptionsFromAttribute(ClassDeclarationSyntax classDeclaration)
+    internal record GeneratorArgument
+    {
+        public IDisposableGeneratorOptions Options { get; }
+        public string? CompositeDisposableFieldName { get; }
+
+        public GeneratorArgument(SemanticModel model, AttributeSyntax attributeSyntax)
+        {
+            var args = attributeSyntax?.ArgumentList?.Arguments;
+            if (args is not SeparatedSyntaxList<AttributeArgumentSyntax> attrArgs) return;
+
+            for (var i = 0; i < attrArgs.Count; i++)
             {
-                var attr = classDeclaration.AttributeLists.SelectMany(x => x.Attributes)
-                    .FirstOrDefault(x => x.Name.ToString() is nameof(IDisposableGenerator) or AttributeName);
+                var arg = attrArgs[i];
+                var expr = arg.Expression;
 
-                var argSyntax = attr?.ArgumentList?.Arguments.FirstOrDefault();
-                if (argSyntax is null) return IDisposableGeneratorOptions.None;
-
-                // e.g. Options.Flag0 | Options.Flag1 => Flag0 , Flag1
-                var parsed = Enum.Parse(typeof(IDisposableGeneratorOptions),
-                    argSyntax.Expression.ToString().Replace(nameof(IDisposableGeneratorOptions) + ".", "").Replace("|", ","));
-
-                return (IDisposableGeneratorOptions)parsed;
+                if (i == 0)     // UnitGenerateOptions options
+                {
+                    Options = GetOptions(arg);
+                }
+                else if (i == 1)    // string toStringFormat
+                {
+                    CompositeDisposableFieldName = model.GetConstantValue(expr).Value?.ToString();
+                }
             }
+        }
+
+        private static IDisposableGeneratorOptions GetOptions(AttributeArgumentSyntax? attributeArgumentSyntax)
+        {
+            if (attributeArgumentSyntax is null) return IDisposableGeneratorOptions.None;
+
+            // e.g. Options.Flag0 | Options.Flag1 => Flag0 , Flag1
+            var parsed = Enum.Parse(typeof(IDisposableGeneratorOptions),
+                attributeArgumentSyntax.Expression.ToString().Replace(nameof(IDisposableGeneratorOptions) + ".", "").Replace("|", ","));
+
+            return (IDisposableGeneratorOptions)parsed;
         }
     }
 }
