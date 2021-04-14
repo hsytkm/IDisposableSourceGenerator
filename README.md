@@ -14,7 +14,7 @@ Use this like below.
 using IDisposableSourceGenerator;
 
 [IDisposableGenerator]
-partial class Foo { }
+partial class Foo { }    // must be partial class
 ```
 
 Then the boilerplate code for the disposable pattern will be generated.
@@ -32,6 +32,9 @@ partial class Foo : System.IDisposable
         {
             // TODO: dispose managed state (managed objects).
             _disposables.Dispose();
+
+            // TODO: called on disposing the managed objects.
+            //OnDisposing();
         }
 
         // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -88,6 +91,8 @@ You can change the name of `CompositeDisposable` field.  Default name is `_dispo
 If filed name is null or whitespace, it named `_disposable`.
 
 ``` csharp
+using IDisposableSourceGenerator;
+
 [IDisposableGenerator(null, "compositeDisposable")]  // CompositeDisposable type is default.
 partial class Foo {
     public Foo(IDisposable d) {
@@ -106,13 +111,14 @@ internal enum IDisposableGeneratorOptions {
     None = 0x0000,
     DisposeUnmanagedObjectsMethod = 0x0001,
     SetLargeFieldsToNullMethod = 0x0002,
+    OnDisposingMethod = 0x0004,
 }
 ```
 
 Of course,  each option can be set simultaneously.
 
 ```csharp
-[IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+[IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod | IDisposableGeneratorOptions.OnDisposingMethod)]
 partial class Foo {
     ...
 }
@@ -141,13 +147,50 @@ If you want to set some large fields to null, you can use the `IDisposableGenera
 This option enables the `SetLargeFieldsToNull` method  and Finalizer. It will be called from the `Dispose` method or Finalizer.
 
 ``` csharp
-[IDisposableGenerator(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+[IDisposableGenerator(null, null, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
 partial class Foo {
     protected virtual partial void SetLargeFieldsToNull()
     {
         // set some large fields to null in this.
     }
 }
+```
+
+#### Invoke  when disposing
+
+If you want to invoke something when disposing the managed objects, you can use the `IDisposableGeneratorOptions.OnDisposing` flag.
+
+This option enables the `OnDisposing` method. It will be called after disposed `CompositeDisposables` from the `Dispose` method.
+
+``` csharp
+[IDisposableGenerator(null, null, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+partial class Foo {
+    protected virtual partial void OnDisposing()
+    {
+        // invoke something when disposing
+    }
+}
+```
+
+## Use in WPF
+
+Maybe WPF app requires editing the `*.csproj` file.
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+
+	<!-- for WPF, add the following settings -->
+    <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IDisposableSourceGenerator" Version="0.0.4" />
+  </ItemGroup>
+</Project>
 ```
 
 ## License

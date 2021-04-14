@@ -36,21 +36,18 @@ namespace IDisposableSourceGenerator
         None = 0x0000,
         DisposeUnmanagedObjectsMethod = 0x0001,
         SetLargeFieldsToNullMethod = 0x0002,
+        OnDisposingMethod = 0x0004,
     }
 
-    /// <summary>
-    /// 複数の IDisposable オブジェクトをまとめて管理します。
-    /// </summary>
+    /// <summary>Manages multiple IDisposable objects</summary>
     internal class CompositeDisposable : IDisposable, ICollection<IDisposable>
     {
         private readonly List<IDisposable> _disposables = new();
         private bool _disposed;
         private readonly object _lockObject = new();
 
-        /// <summary>
-        /// IDisposableコレクションの列挙子を取得します。
-        /// </summary>
-        /// <returns>IDisposableコレクションの列挙子</returns>
+        /// <summary>Gets the enumerator of the IDisposable collection.</summary>
+        /// <returns>IEnumerator&lt;IDisposable&gt;</returns>
         public IEnumerator<IDisposable> GetEnumerator()
         {
             ThrowExceptionIfDisposed();
@@ -69,10 +66,8 @@ namespace IDisposableSourceGenerator
             }
         }
 
-        /// <summary>
-        /// 末尾にオブジェクトを追加します。
-        /// </summary>
-        /// <param name="item">追加するオブジェクト</param>
+        /// <summary>Add an object at the end</summary>
+        /// <param name="item">Objects to add</param>
         public void Add(IDisposable item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
@@ -84,9 +79,7 @@ namespace IDisposableSourceGenerator
             }
         }
 
-        /// <summary>
-        /// すべての要素を削除します。
-        /// </summary>
+        /// <summary>Delete all objects</summary>
         public void Clear()
         {
             ThrowExceptionIfDisposed();
@@ -96,11 +89,9 @@ namespace IDisposableSourceGenerator
             }
         }
 
-        /// <summary>
-        /// ある要素がこのコレクションに含まれているかどうかを判断します。
-        /// </summary>
-        /// <param name="item">コレクションに含まれているか判断したい要素</param>
-        /// <returns>このコレクションに含まれているかどうか</returns>
+        /// <summary>Determine if an objects is included in this collection or not</summary>
+        /// <param name="item">Elements that you want to determine if they are included in the collection</param>
+        /// <returns>Whether or not it is included</returns>
         public bool Contains(IDisposable item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
@@ -113,10 +104,10 @@ namespace IDisposableSourceGenerator
         }
 
         /// <summary>
-        /// 全体を互換性のある1次元の配列にコピーします。コピー操作は、コピー先の配列の指定したインデックスから始まります。
+        /// Copies the entire array to a compatible one-dimensional array. The copy operation starts from the specified index of the destination array.
         /// </summary>
-        /// <param name="array">コピー先の配列</param>
-        /// <param name="arrayIndex">コピー先の配列のどこからコピー操作をするかのインデックス</param>
+        /// <param name="array">Copy destination array</param>
+        /// <param name="arrayIndex">Index of where in the destination array to perform the copy operation from</param>
         public void CopyTo(IDisposable[] array, int arrayIndex)
         {
             ThrowExceptionIfDisposed();
@@ -126,9 +117,7 @@ namespace IDisposableSourceGenerator
             }
         }
 
-        /// <summary>
-        /// 実際に格納されている要素の数を取得します。
-        /// </summary>
+        /// <summary>Get the number of objects actually stored</summary>
         public int Count
         {
             get
@@ -141,9 +130,7 @@ namespace IDisposableSourceGenerator
             }
         }
 
-        /// <summary>
-        /// このコレクションが読み取り専用かどうかを取得します。(常にfalseを返します)
-        /// </summary>
+        /// <summary>Gets whether this collection is read-only or not. (Always returns false)</summary>
         public bool IsReadOnly
         {
             get
@@ -153,11 +140,9 @@ namespace IDisposableSourceGenerator
             }
         }
 
-        /// <summary>
-        /// 最初に見つかった特定のオブジェクトを削除します。
-        /// </summary>
-        /// <param name="item">削除したいオブジェクト</param>
-        /// <returns>削除できたかどうか</returns>
+        /// <summary>Deletes the first specific object found.</summary>
+        /// <param name="item">Object to be deleted</param>
+        /// <returns>whether it was possible to delete it</returns>
         public bool Remove(IDisposable item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
@@ -170,15 +155,15 @@ namespace IDisposableSourceGenerator
             }
         }
 
-        /// <summary>
-        /// このコレクションに含まれるすべての要素をDisposeします。
-        /// </summary>
+        /// <summary>Dispose all the objects in this collection</summary>
         public void Dispose()
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>dispose method</summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -193,6 +178,7 @@ namespace IDisposableSourceGenerator
             _disposed = true;
         }
 
+        /// <summary>throw exception if disposed</summary>
         protected void ThrowExceptionIfDisposed()
         {
             if (_disposed)

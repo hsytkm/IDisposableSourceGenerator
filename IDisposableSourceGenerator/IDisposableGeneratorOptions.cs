@@ -9,6 +9,6 @@ namespace IDisposableSourceGenerator
         None = 0x0000,
         DisposeUnmanagedObjectsMethod = 0x0001,
         SetLargeFieldsToNullMethod = 0x0002,
-        //DisposeManagedObjectsMethod = 0x0004,
+        OnDisposingMethod = 0x0004,
     }
 }

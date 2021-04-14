@@ -41,65 +41,70 @@ namespace IDisposableSourceGenerator
                     "sableFieldName) ? \"_disposables\" : compositeDisposableFieldName!;\r\n            t" +
                     "his.Options = options;\r\n        }\r\n    }\r\n\r\n    [Flags]\r\n    internal enum IDisp" +
                     "osableGeneratorOptions\r\n    {\r\n        None = 0x0000,\r\n        DisposeUnmanagedO" +
-                    "bjectsMethod = 0x0001,\r\n        SetLargeFieldsToNullMethod = 0x0002,\r\n    }\r\n\r\n " +
-                    "   /// <summary>\r\n    /// 複数の IDisposable オブジェクトをまとめて管理します。\r\n    /// </summary>\r" +
-                    "\n    internal class CompositeDisposable : IDisposable, ICollection<IDisposable>\r" +
-                    "\n    {\r\n        private readonly List<IDisposable> _disposables = new();\r\n      " +
-                    "  private bool _disposed;\r\n        private readonly object _lockObject = new();\r" +
-                    "\n\r\n        /// <summary>\r\n        /// IDisposableコレクションの列挙子を取得します。\r\n        /// " +
-                    "</summary>\r\n        /// <returns>IDisposableコレクションの列挙子</returns>\r\n        public" +
-                    " IEnumerator<IDisposable> GetEnumerator()\r\n        {\r\n            ThrowException" +
-                    "IfDisposed();\r\n            lock (_lockObject)\r\n            {\r\n                re" +
-                    "turn ((IEnumerable<IDisposable>)_disposables.ToArray()).GetEnumerator();\r\n      " +
-                    "      }\r\n        }\r\n\r\n        System.Collections.IEnumerator System.Collections." +
-                    "IEnumerable.GetEnumerator()\r\n        {\r\n            ThrowExceptionIfDisposed();\r" +
-                    "\n            lock (_lockObject)\r\n            {\r\n                return ((IEnumer" +
-                    "able<IDisposable>)_disposables.ToArray()).GetEnumerator();\r\n            }\r\n     " +
-                    "   }\r\n\r\n        /// <summary>\r\n        /// 末尾にオブジェクトを追加します。\r\n        /// </summa" +
-                    "ry>\r\n        /// <param name=\"item\">追加するオブジェクト</param>\r\n        public void Add(" +
-                    "IDisposable item)\r\n        {\r\n            if (item is null) throw new ArgumentNu" +
-                    "llException(nameof(item));\r\n\r\n            ThrowExceptionIfDisposed();\r\n         " +
-                    "   lock (_lockObject)\r\n            {\r\n                _disposables.Add(item);\r\n " +
-                    "           }\r\n        }\r\n\r\n        /// <summary>\r\n        /// すべての要素を削除します。\r\n   " +
-                    "     /// </summary>\r\n        public void Clear()\r\n        {\r\n            ThrowEx" +
-                    "ceptionIfDisposed();\r\n            lock (_lockObject)\r\n            {\r\n           " +
-                    "     _disposables.Clear();\r\n            }\r\n        }\r\n\r\n        /// <summary>\r\n " +
-                    "       /// ある要素がこのコレクションに含まれているかどうかを判断します。\r\n        /// </summary>\r\n        /// " +
-                    "<param name=\"item\">コレクションに含まれているか判断したい要素</param>\r\n        /// <returns>このコレクションに" +
-                    "含まれているかどうか</returns>\r\n        public bool Contains(IDisposable item)\r\n        {\r" +
-                    "\n            if (item is null) throw new ArgumentNullException(nameof(item));\r\n\r" +
-                    "\n            ThrowExceptionIfDisposed();\r\n            lock (_lockObject)\r\n      " +
-                    "      {\r\n                return _disposables.Contains(item);\r\n            }\r\n   " +
-                    "     }\r\n\r\n        /// <summary>\r\n        /// 全体を互換性のある1次元の配列にコピーします。コピー操作は、コピー先の" +
-                    "配列の指定したインデックスから始まります。\r\n        /// </summary>\r\n        /// <param name=\"array\">コ" +
-                    "ピー先の配列</param>\r\n        /// <param name=\"arrayIndex\">コピー先の配列のどこからコピー操作をするかのインデック" +
-                    "ス</param>\r\n        public void CopyTo(IDisposable[] array, int arrayIndex)\r\n    " +
-                    "    {\r\n            ThrowExceptionIfDisposed();\r\n            lock (_lockObject)\r\n" +
-                    "            {\r\n                _disposables.CopyTo(array, arrayIndex);\r\n        " +
-                    "    }\r\n        }\r\n\r\n        /// <summary>\r\n        /// 実際に格納されている要素の数を取得します。\r\n  " +
-                    "      /// </summary>\r\n        public int Count\r\n        {\r\n            get\r\n    " +
-                    "        {\r\n                ThrowExceptionIfDisposed();\r\n                lock (_l" +
-                    "ockObject)\r\n                {\r\n                    return _disposables.Count;\r\n " +
-                    "               }\r\n            }\r\n        }\r\n\r\n        /// <summary>\r\n        ///" +
-                    " このコレクションが読み取り専用かどうかを取得します。(常にfalseを返します)\r\n        /// </summary>\r\n        publi" +
-                    "c bool IsReadOnly\r\n        {\r\n            get\r\n            {\r\n                Th" +
-                    "rowExceptionIfDisposed();\r\n                return false;\r\n            }\r\n       " +
-                    " }\r\n\r\n        /// <summary>\r\n        /// 最初に見つかった特定のオブジェクトを削除します。\r\n        /// <" +
-                    "/summary>\r\n        /// <param name=\"item\">削除したいオブジェクト</param>\r\n        /// <retu" +
-                    "rns>削除できたかどうか</returns>\r\n        public bool Remove(IDisposable item)\r\n        {" +
-                    "\r\n            if (item is null) throw new ArgumentNullException(nameof(item));\r\n" +
-                    "\r\n            ThrowExceptionIfDisposed();\r\n\r\n            lock (_lockObject)\r\n   " +
-                    "         {\r\n                return _disposables.Remove(item);\r\n            }\r\n  " +
-                    "      }\r\n\r\n        /// <summary>\r\n        /// このコレクションに含まれるすべての要素をDisposeします。\r\n " +
-                    "       /// </summary>\r\n        public void Dispose()\r\n        {\r\n            Dis" +
-                    "pose(disposing: true);\r\n            GC.SuppressFinalize(this);\r\n        }\r\n\r\n   " +
-                    "     protected virtual void Dispose(bool disposing)\r\n        {\r\n            if (" +
-                    "_disposed) return;\r\n\r\n            if (disposing)\r\n            {\r\n               " +
-                    " lock (_lockObject)\r\n                {\r\n                    _disposables.ForEach" +
-                    "(item => item.Dispose());\r\n                }\r\n            }\r\n            _dispos" +
-                    "ed = true;\r\n        }\r\n\r\n        protected void ThrowExceptionIfDisposed()\r\n    " +
-                    "    {\r\n            if (_disposed)\r\n                throw new ObjectDisposedExcep" +
-                    "tion(nameof(CompositeDisposable));\r\n        }\r\n    }\r\n}\r\n");
+                    "bjectsMethod = 0x0001,\r\n        SetLargeFieldsToNullMethod = 0x0002,\r\n        On" +
+                    "DisposingMethod = 0x0004,\r\n    }\r\n\r\n    /// <summary>Manages multiple IDisposabl" +
+                    "e objects</summary>\r\n    internal class CompositeDisposable : IDisposable, IColl" +
+                    "ection<IDisposable>\r\n    {\r\n        private readonly List<IDisposable> _disposab" +
+                    "les = new();\r\n        private bool _disposed;\r\n        private readonly object _" +
+                    "lockObject = new();\r\n\r\n        /// <summary>Gets the enumerator of the IDisposab" +
+                    "le collection.</summary>\r\n        /// <returns>IEnumerator&lt;IDisposable&gt;</r" +
+                    "eturns>\r\n        public IEnumerator<IDisposable> GetEnumerator()\r\n        {\r\n   " +
+                    "         ThrowExceptionIfDisposed();\r\n            lock (_lockObject)\r\n          " +
+                    "  {\r\n                return ((IEnumerable<IDisposable>)_disposables.ToArray()).G" +
+                    "etEnumerator();\r\n            }\r\n        }\r\n\r\n        System.Collections.IEnumera" +
+                    "tor System.Collections.IEnumerable.GetEnumerator()\r\n        {\r\n            Throw" +
+                    "ExceptionIfDisposed();\r\n            lock (_lockObject)\r\n            {\r\n         " +
+                    "       return ((IEnumerable<IDisposable>)_disposables.ToArray()).GetEnumerator()" +
+                    ";\r\n            }\r\n        }\r\n\r\n        /// <summary>Add an object at the end</su" +
+                    "mmary>\r\n        /// <param name=\"item\">Objects to add</param>\r\n        public vo" +
+                    "id Add(IDisposable item)\r\n        {\r\n            if (item is null) throw new Arg" +
+                    "umentNullException(nameof(item));\r\n\r\n            ThrowExceptionIfDisposed();\r\n  " +
+                    "          lock (_lockObject)\r\n            {\r\n                _disposables.Add(it" +
+                    "em);\r\n            }\r\n        }\r\n\r\n        /// <summary>Delete all objects</summa" +
+                    "ry>\r\n        public void Clear()\r\n        {\r\n            ThrowExceptionIfDispose" +
+                    "d();\r\n            lock (_lockObject)\r\n            {\r\n                _disposable" +
+                    "s.Clear();\r\n            }\r\n        }\r\n\r\n        /// <summary>Determine if an obj" +
+                    "ects is included in this collection or not</summary>\r\n        /// <param name=\"i" +
+                    "tem\">Elements that you want to determine if they are included in the collection<" +
+                    "/param>\r\n        /// <returns>Whether or not it is included</returns>\r\n        p" +
+                    "ublic bool Contains(IDisposable item)\r\n        {\r\n            if (item is null) " +
+                    "throw new ArgumentNullException(nameof(item));\r\n\r\n            ThrowExceptionIfDi" +
+                    "sposed();\r\n            lock (_lockObject)\r\n            {\r\n                return" +
+                    " _disposables.Contains(item);\r\n            }\r\n        }\r\n\r\n        /// <summary>" +
+                    "\r\n        /// Copies the entire array to a compatible one-dimensional array. The" +
+                    " copy operation starts from the specified index of the destination array.\r\n     " +
+                    "   /// </summary>\r\n        /// <param name=\"array\">Copy destination array</param" +
+                    ">\r\n        /// <param name=\"arrayIndex\">Index of where in the destination array " +
+                    "to perform the copy operation from</param>\r\n        public void CopyTo(IDisposab" +
+                    "le[] array, int arrayIndex)\r\n        {\r\n            ThrowExceptionIfDisposed();\r" +
+                    "\n            lock (_lockObject)\r\n            {\r\n                _disposables.Cop" +
+                    "yTo(array, arrayIndex);\r\n            }\r\n        }\r\n\r\n        /// <summary>Get th" +
+                    "e number of objects actually stored</summary>\r\n        public int Count\r\n       " +
+                    " {\r\n            get\r\n            {\r\n                ThrowExceptionIfDisposed();\r" +
+                    "\n                lock (_lockObject)\r\n                {\r\n                    retu" +
+                    "rn _disposables.Count;\r\n                }\r\n            }\r\n        }\r\n\r\n        /" +
+                    "// <summary>Gets whether this collection is read-only or not. (Always returns fa" +
+                    "lse)</summary>\r\n        public bool IsReadOnly\r\n        {\r\n            get\r\n    " +
+                    "        {\r\n                ThrowExceptionIfDisposed();\r\n                return f" +
+                    "alse;\r\n            }\r\n        }\r\n\r\n        /// <summary>Deletes the first specif" +
+                    "ic object found.</summary>\r\n        /// <param name=\"item\">Object to be deleted<" +
+                    "/param>\r\n        /// <returns>whether it was possible to delete it</returns>\r\n  " +
+                    "      public bool Remove(IDisposable item)\r\n        {\r\n            if (item is n" +
+                    "ull) throw new ArgumentNullException(nameof(item));\r\n\r\n            ThrowExceptio" +
+                    "nIfDisposed();\r\n\r\n            lock (_lockObject)\r\n            {\r\n               " +
+                    " return _disposables.Remove(item);\r\n            }\r\n        }\r\n\r\n        /// <sum" +
+                    "mary>Dispose all the objects in this collection</summary>\r\n        public void D" +
+                    "ispose()\r\n        {\r\n            Dispose(disposing: true);\r\n            GC.Suppr" +
+                    "essFinalize(this);\r\n        }\r\n\r\n        /// <summary>dispose method</summary>\r\n" +
+                    "        /// <param name=\"disposing\"></param>\r\n        protected virtual void Dis" +
+                    "pose(bool disposing)\r\n        {\r\n            if (_disposed) return;\r\n\r\n         " +
+                    "   if (disposing)\r\n            {\r\n                lock (_lockObject)\r\n          " +
+                    "      {\r\n                    _disposables.ForEach(item => item.Dispose());\r\n    " +
+                    "            }\r\n            }\r\n            _disposed = true;\r\n        }\r\n\r\n      " +
+                    "  /// <summary>throw exception if disposed</summary>\r\n        protected void Thr" +
+                    "owExceptionIfDisposed()\r\n        {\r\n            if (_disposed)\r\n                " +
+                    "throw new ObjectDisposedException(nameof(CompositeDisposable));\r\n        }\r\n    " +
+                    "}\r\n}\r\n");
             return this.GenerationEnvironment.ToString();
         }
     }

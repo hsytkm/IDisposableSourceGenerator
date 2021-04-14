@@ -15,21 +15,28 @@ namespace <#= Namespace #>
 {
     partial class <#= ClassName #> : IDisposable
     {
-        internal readonly <#= CompositeDisposableTypeName #> <#= CompositeDisposableFieldName #> = new();
+        internal readonly <#= CompositeDisposableTypeName #> <#= CompositeDisposableFieldName #> = new <#= CompositeDisposableTypeName #>();
         private bool _disposedValue = false;
 
-        // Dispose unmanaged objects when Dispose() or finalizer is invoked.
+        // dispose unmanaged objects when Dispose() or finalizer is invoked.
 <# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>
         protected virtual partial void DisposeUnmanagedObjects();   // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } else { #>
         //protected virtual partial void DisposeUnmanagedObjects(); // <#= ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod) #>
 <# } #>
 
-        // Set large fields to null when Dispose() or finalizer is invoked.
+        // set large fields to null when Dispose() or finalizer is invoked.
 <# if (HasFlag(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)) { #>
         protected virtual partial void SetLargeFieldsToNull();      // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
 <# } else { #>
         //protected virtual partial void SetLargeFieldsToNull();    // <#= ToFullName(IDisposableGeneratorOptions.SetLargeFieldsToNullMethod) #>
+<# } #>
+
+        // called on disposing the managed objects.
+<# if (HasFlag(IDisposableGeneratorOptions.OnDisposingMethod)) { #>
+        protected virtual partial void OnDisposing();               // <#= ToFullName(IDisposableGeneratorOptions.OnDisposingMethod) #>
+<# } else { #>
+        //protected virtual partial void OnDisposing();             // <#= ToFullName(IDisposableGeneratorOptions.OnDisposingMethod) #>
 <# } #>
 
         protected virtual void Dispose(bool disposing)
@@ -40,6 +47,14 @@ namespace <#= Namespace #>
             {
                 // dispose managed state (managed objects).
                 <#= CompositeDisposableFieldName #>.Dispose();
+
+<# if (HasFlag(IDisposableGeneratorOptions.OnDisposingMethod)) { #>
+                // called on disposing the managed objects.
+                OnDisposing();              // <#= ToFullName(IDisposableGeneratorOptions.OnDisposingMethod) #>
+<# } else { #>
+                // TODO: called on disposing the managed objects.
+                //OnDisposing();            // <#= ToFullName(IDisposableGeneratorOptions.OnDisposingMethod) #>
+<# } #>
             }
 
 <# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>
