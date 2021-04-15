@@ -72,10 +72,7 @@ namespace IDisposableSourceGenerator
             this.Write("\r\n");
  } 
             this.Write("\r\n        protected virtual void Dispose(bool disposing)\r\n        {\r\n            " +
-                    "if (_disposedValue) return;\r\n\r\n            if (disposing)\r\n            {\r\n      " +
-                    "          // dispose managed state (managed objects).\r\n                ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableFieldName));
-            this.Write(".Dispose();\r\n\r\n");
+                    "if (_disposedValue) return;\r\n\r\n            if (disposing)\r\n            {\r\n");
  if (HasFlag(IDisposableGeneratorOptions.OnDisposingMethod)) { 
             this.Write("                // called on disposing the managed objects.\r\n                OnDi" +
                     "sposing();              // ");
@@ -87,7 +84,9 @@ namespace IDisposableSourceGenerator
             this.Write(this.ToStringHelper.ToStringWithCulture(ToFullName(IDisposableGeneratorOptions.OnDisposingMethod)));
             this.Write("\r\n");
  } 
-            this.Write("            }\r\n\r\n");
+            this.Write("\r\n                // dispose managed state (managed objects).\r\n                ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableFieldName));
+            this.Write(".Dispose();\r\n            }\r\n\r\n");
  if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { 
             this.Write("            // free unmanaged resources (unmanaged objects) and override a finali" +
                     "zer below.\r\n            DisposeUnmanagedObjects();      // ");

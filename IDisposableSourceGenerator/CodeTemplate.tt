@@ -45,9 +45,6 @@ namespace <#= Namespace #>
 
             if (disposing)
             {
-                // dispose managed state (managed objects).
-                <#= CompositeDisposableFieldName #>.Dispose();
-
 <# if (HasFlag(IDisposableGeneratorOptions.OnDisposingMethod)) { #>
                 // called on disposing the managed objects.
                 OnDisposing();              // <#= ToFullName(IDisposableGeneratorOptions.OnDisposingMethod) #>
@@ -55,6 +52,9 @@ namespace <#= Namespace #>
                 // TODO: called on disposing the managed objects.
                 //OnDisposing();            // <#= ToFullName(IDisposableGeneratorOptions.OnDisposingMethod) #>
 <# } #>
+
+                // dispose managed state (managed objects).
+                <#= CompositeDisposableFieldName #>.Dispose();
             }
 
 <# if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { #>

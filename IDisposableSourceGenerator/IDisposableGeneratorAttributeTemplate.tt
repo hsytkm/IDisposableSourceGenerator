@@ -42,9 +42,9 @@ namespace IDisposableSourceGenerator
     /// <summary>Manages multiple IDisposable objects</summary>
     internal class CompositeDisposable : IDisposable, ICollection<IDisposable>
     {
-        private readonly List<IDisposable> _disposables = new();
+        private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private bool _disposed;
-        private readonly object _lockObject = new();
+        private readonly object _lockObject = new object();
 
         /// <summary>Gets the enumerator of the IDisposable collection.</summary>
         /// <returns>IEnumerator&lt;IDisposable&gt;</returns>

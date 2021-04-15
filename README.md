@@ -22,7 +22,8 @@ Then the boilerplate code for the disposable pattern will be generated.
 ``` csharp
 partial class Foo : System.IDisposable
 {
-    internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables = new();
+    internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables =
+        new IDisposableSourceGenerator.CompositeDisposable();
     private bool _disposedValue = false;
 
     protected virtual void Dispose(bool disposing)
@@ -30,13 +31,12 @@ partial class Foo : System.IDisposable
         if (_disposedValue) return;
         if (disposing)
         {
-            // TODO: dispose managed state (managed objects).
-            _disposables.Dispose();
-
             // TODO: called on disposing the managed objects.
             //OnDisposing();
-        }
 
+            // TODO: dispose managed state (managed objects).
+            _disposables.Dispose();
+        }
         // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
         //DisposeUnmanagedObjects();
 
@@ -158,16 +158,16 @@ partial class Foo {
 
 #### Invoke  when disposing
 
-If you want to invoke something when disposing the managed objects, you can use the `IDisposableGeneratorOptions.OnDisposing` flag.
+If you want to do something when disposing the managed objects, you can use the `IDisposableGeneratorOptions.OnDisposing` flag.
 
-This option enables the `OnDisposing` method. It will be called after disposed `CompositeDisposables` from the `Dispose` method.
+This option enables the `OnDisposing` method. It will be called before disposed `CompositeDisposables` from the `Dispose` method.
 
 ``` csharp
 [IDisposableGenerator(null, null, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
 partial class Foo {
     protected virtual partial void OnDisposing()
     {
-        // invoke something when disposing
+        // do something when disposing
     }
 }
 ```
@@ -188,7 +188,10 @@ Maybe WPF app requires editing the `*.csproj` file.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IDisposableSourceGenerator" Version="0.0.4" />
+    <PackageReference Include="IDisposableSourceGenerator" Version="0.0.5" >
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>
 ```
