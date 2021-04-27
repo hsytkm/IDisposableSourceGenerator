@@ -26,6 +26,8 @@ namespace IDisposableSourceGenerator
 
         public void Execute(GeneratorExecutionContext context)
         {
+            if (context.Compilation is not CSharpCompilation) return;
+
             var attrCode = new IDisposableGeneratorAttributeTemplate().TransformText();
             context.AddSource(AttributeName + ".cs", attrCode);
 

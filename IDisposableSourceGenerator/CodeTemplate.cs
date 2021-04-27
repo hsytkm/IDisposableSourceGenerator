@@ -34,7 +34,7 @@ namespace IDisposableSourceGenerator
  } 
             this.Write("{\r\n    partial class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
-            this.Write(" : IDisposable\r\n    {\r\n        internal readonly ");
+            this.Write(" : IDisposable\r\n    {\r\n        public readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableTypeName));
             this.Write(" ");
             this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableFieldName));

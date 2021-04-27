@@ -24,7 +24,7 @@ namespace IDisposableSourceGenerator
             string? compositeDisposableFieldName = null,
             IDisposableGeneratorOptions options = IDisposableGeneratorOptions.None)
         {
-            this.CompositeDisposableType = compositeDisposableType ?? typeof(IDisposableSourceGenerator.CompositeDisposable);
+            this.CompositeDisposableType = compositeDisposableType ?? typeof(IDisposableSourceGenerator.SimpleCompositeDisposable);
             this.CompositeDisposableFieldName = string.IsNullOrWhiteSpace(compositeDisposableFieldName) ? "_disposables" : compositeDisposableFieldName!;
             this.Options = options;
         }
@@ -40,7 +40,7 @@ namespace IDisposableSourceGenerator
     }
 
     /// <summary>Manages multiple IDisposable objects</summary>
-    internal class CompositeDisposable : IDisposable, ICollection<IDisposable>
+    internal class SimpleCompositeDisposable : IDisposable, ICollection<IDisposable>
     {
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private bool _disposed;
@@ -182,7 +182,7 @@ namespace IDisposableSourceGenerator
         protected void ThrowExceptionIfDisposed()
         {
             if (_disposed)
-                throw new ObjectDisposedException(nameof(CompositeDisposable));
+                throw new ObjectDisposedException(nameof(SimpleCompositeDisposable));
         }
     }
 }

@@ -15,7 +15,7 @@ namespace <#= Namespace #>
 {
     partial class <#= ClassName #> : IDisposable
     {
-        internal readonly <#= CompositeDisposableTypeName #> <#= CompositeDisposableFieldName #> = new <#= CompositeDisposableTypeName #>();
+        public readonly <#= CompositeDisposableTypeName #> <#= CompositeDisposableFieldName #> = new <#= CompositeDisposableTypeName #>();
         private bool _disposedValue = false;
 
         // dispose unmanaged objects when Dispose() or finalizer is invoked.

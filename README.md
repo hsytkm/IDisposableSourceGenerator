@@ -22,8 +22,8 @@ Then the boilerplate code for the disposable pattern will be generated.
 ``` csharp
 partial class Foo : System.IDisposable
 {
-    internal readonly IDisposableSourceGenerator.CompositeDisposable _disposables =
-        new IDisposableSourceGenerator.CompositeDisposable();
+    internal readonly IDisposableSourceGenerator.SimpleCompositeDisposable _disposables =
+        new IDisposableSourceGenerator.SimpleCompositeDisposable();
     private bool _disposedValue = false;
 
     protected virtual void Dispose(bool disposing)
@@ -56,7 +56,7 @@ partial class Foo : System.IDisposable
 }
 ```
 
-Generator declare a `_disposables` field of `CompositeDisposable` type . You can add disposable objects with it.
+Generator declare a `_disposables` field of `SimpleCompositeDisposable` type . You can add disposable objects with it.
 
 (The field name `_disposables` can be changed with a generator argument. see **CompositeDisposableFieldName**.)
 
@@ -73,7 +73,7 @@ partial class Foo {
 
 You can specify the type of `CompositeDisposable`.
 
-If you don't specified or set null, the default class `IDisposableSourceGenerator.CompositeDisposable` in the source generator is used.
+If you don't specified or set default, the default class `IDisposableSourceGenerator.SimpleCompositeDisposable` in the source generator is used.
 
 ``` csharp
 [IDisposableGenerator(typeof(System.Reactive.Disposables.CompositeDisposable))]
@@ -88,12 +88,12 @@ partial class Foo {
 
 You can change the name of `CompositeDisposable` field.  Default name is `_disposables`.
 
-If filed name is null or whitespace, it named `_disposable`.
+If filed name is default or whitespace, it named `_disposable`.
 
 ``` csharp
 using IDisposableSourceGenerator;
 
-[IDisposableGenerator(null, "compositeDisposable")]  // CompositeDisposable type is default.
+[IDisposableGenerator(default, "compositeDisposable")]  // CompositeDisposable type is default.
 partial class Foo {
     public Foo(IDisposable d) {
         compositeDisposable.Add(d);  // The name specified in the argument.
@@ -118,7 +118,7 @@ internal enum IDisposableGeneratorOptions {
 Of course,  each option can be set simultaneously.
 
 ```csharp
-[IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod | IDisposableGeneratorOptions.OnDisposingMethod)]
+[IDisposableGenerator(default, default, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod | IDisposableGeneratorOptions.SetLargeFieldsToNullMethod | IDisposableGeneratorOptions.OnDisposingMethod)]
 partial class Foo {
     ...
 }
@@ -131,7 +131,7 @@ If you want to release some unmanaged objects, you can use the `IDisposableGener
 This option enables the `DisposeUnmanagedObjects` method and Finalizer. It will be called from the `Dispose` method or Finalizer.
 
 ``` csharp
-[IDisposableGenerator(null, null, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)]
+[IDisposableGenerator(default, default, IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)]
 partial class Foo {
     protected virtual partial void DisposeUnmanagedObjects()
     {
@@ -147,7 +147,7 @@ If you want to set some large fields to null, you can use the `IDisposableGenera
 This option enables the `SetLargeFieldsToNull` method  and Finalizer. It will be called from the `Dispose` method or Finalizer.
 
 ``` csharp
-[IDisposableGenerator(null, null, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+[IDisposableGenerator(default, default, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
 partial class Foo {
     protected virtual partial void SetLargeFieldsToNull()
     {
@@ -163,7 +163,7 @@ If you want to do something when disposing the managed objects, you can use the 
 This option enables the `OnDisposing` method. It will be called before disposed `CompositeDisposables` from the `Dispose` method.
 
 ``` csharp
-[IDisposableGenerator(null, null, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+[IDisposableGenerator(default, default, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
 partial class Foo {
     protected virtual partial void OnDisposing()
     {
@@ -183,7 +183,7 @@ Maybe WPF app requires editing the `*.csproj` file.
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
 
-	<!-- for WPF, add the following settings -->
+    <!-- for WPF, add the following settings -->
     <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
   </PropertyGroup>
 

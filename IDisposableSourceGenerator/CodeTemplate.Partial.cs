@@ -4,7 +4,7 @@ namespace IDisposableSourceGenerator
 {
     public partial class CodeTemplate
     {
-        private const string DefaultTypeName = "IDisposableSourceGenerator.CompositeDisposable";
+        private const string DefaultTypeName = "IDisposableSourceGenerator.SimpleCompositeDisposable";
         private const string DefaultFieldName = "_disposables";
 
         internal string Namespace { get; set; } = "";

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace IDisposableSourceGenerator.Test
 {
-    [IDisposableGenerator(null, null, IDisposableGeneratorOptions.OnDisposingMethod)]
+    [IDisposableGenerator(default, default, IDisposableGeneratorOptions.OnDisposingMethod)]
     partial class OnDisposingDisposer
     {
         private readonly DisposableObject _obj;

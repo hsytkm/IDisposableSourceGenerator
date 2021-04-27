@@ -16,15 +16,16 @@
     <Description>Implement the dispose pattern using SourceGenerator.</Description>
     <AssemblyName>IDisposableSourceGenerator</AssemblyName>
     <RootNamespace>IDisposableSourceGenerator</RootNamespace>
-    <Version>0.0.5</Version>
+    <Version>0.0.6</Version>
     <Authors>myoga</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hsytkm/IDisposableSourceGenerator</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hsytkm/IDisposableSourceGenerator</RepositoryUrl>
-    <PackageTags>IDisposable, Finalizers</PackageTags>
+    <PackageTags>IDisposable, Finalizers, Deconstructor</PackageTags>
     <Copyright>Copyright (c) 2021 myoga</Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
