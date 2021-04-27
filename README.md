@@ -58,7 +58,7 @@ partial class Foo : System.IDisposable
 
 Generator declare a `_disposables` field of `SimpleCompositeDisposable` type . You can add disposable objects with it.
 
-(The field name `_disposables` can be changed with a generator argument. see **CompositeDisposableFieldName**.)
+The field name `_disposables` can be changed with a generator argument. see **CompositeDisposableFieldName**.
 
 ``` csharp
 [IDisposableGenerator]
@@ -86,17 +86,17 @@ partial class Foo {
 
 ## CompositeDisposableFieldName
 
-You can change the name of `CompositeDisposable` field.  Default name is `_disposables`.
+You can change the name of `CompositeDisposable` field. 
 
-If filed name is default or whitespace, it named `_disposable`.
+If filed name is default or whitespace, it named `_disposables`.
 
 ``` csharp
 using IDisposableSourceGenerator;
 
-[IDisposableGenerator(default, "compositeDisposable")]  // CompositeDisposable type is default.
+[IDisposableGenerator(default, "myAwesomeDisposables")]  // CompositeDisposable type is default.
 partial class Foo {
     public Foo(IDisposable d) {
-        compositeDisposable.Add(d);  // The name specified in the argument.
+        myAwesomeDisposables.Add(d);  // The name specified in the argument.
     }
 }
 ```
@@ -163,7 +163,7 @@ If you want to do something when disposing the managed objects, you can use the 
 This option enables the `OnDisposing` method. It will be called before disposed `CompositeDisposables` from the `Dispose` method.
 
 ``` csharp
-[IDisposableGenerator(default, default, IDisposableGeneratorOptions.SetLargeFieldsToNullMethod)]
+[IDisposableGenerator(default, default, IDisposableGeneratorOptions.OnDisposingMethod)]
 partial class Foo {
     protected virtual partial void OnDisposing()
     {
