@@ -4,8 +4,6 @@ Implement the dispose pattern using SourceGenerator.
 
 [![NuGet](https://img.shields.io/nuget/v/IDisposableSourceGenerator?style=flat-square)](https://www.nuget.org/packages/IDisposableSourceGenerator)
 
-NuGet: [IDisposableSourceGenerator](https://www.nuget.org/packages/IDisposableSourceGenerator/)
-
 ## Introduction
 
 Use this like below.
