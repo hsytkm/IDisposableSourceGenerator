@@ -24,9 +24,9 @@ namespace IDisposableSourceGenerator
             string? compositeDisposableFieldName = null,
             IDisposableGeneratorOptions options = IDisposableGeneratorOptions.None)
         {
-            this.CompositeDisposableType = compositeDisposableType ?? typeof(IDisposableSourceGenerator.SimpleCompositeDisposable);
-            this.CompositeDisposableFieldName = string.IsNullOrWhiteSpace(compositeDisposableFieldName) ? "_disposables" : compositeDisposableFieldName!;
-            this.Options = options;
+            CompositeDisposableType = compositeDisposableType ?? typeof(IDisposableSourceGenerator.SimpleCompositeDisposable);
+            CompositeDisposableFieldName = string.IsNullOrWhiteSpace(compositeDisposableFieldName) ? "_disposables" : compositeDisposableFieldName!;
+            Options = options;
         }
     }
 

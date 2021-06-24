@@ -34,14 +34,14 @@ namespace IDisposableSourceGenerator
  } 
             this.Write("{\r\n    partial class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
-            this.Write(" : IDisposable\r\n    {\r\n        public readonly ");
+            this.Write(" : IDisposable\r\n    {\r\n        protected readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableTypeName));
             this.Write(" ");
             this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableFieldName));
             this.Write(" = new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(CompositeDisposableTypeName));
-            this.Write("();\r\n        private bool _disposedValue = false;\r\n\r\n        // dispose unmanaged" +
-                    " objects when Dispose() or finalizer is invoked.\r\n");
+            this.Write("();\r\n        private bool _disposedValue;\r\n\r\n        // dispose unmanaged objects" +
+                    " when Dispose() or finalizer is invoked.\r\n");
  if (HasFlag(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)) { 
             this.Write("        protected virtual partial void DisposeUnmanagedObjects();   // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToFullName(IDisposableGeneratorOptions.DisposeUnmanagedObjectsMethod)));

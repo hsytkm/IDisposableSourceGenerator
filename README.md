@@ -20,9 +20,9 @@ Then the boilerplate code for the disposable pattern will be generated.
 ``` csharp
 partial class Foo : System.IDisposable
 {
-    internal readonly IDisposableSourceGenerator.SimpleCompositeDisposable _disposables =
+    protected readonly IDisposableSourceGenerator.SimpleCompositeDisposable _disposables =
         new IDisposableSourceGenerator.SimpleCompositeDisposable();
-    private bool _disposedValue = false;
+    private bool _disposedValue;
 
     protected virtual void Dispose(bool disposing)
     {
@@ -186,7 +186,7 @@ Maybe WPF app requires editing the `*.csproj` file.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IDisposableSourceGenerator" Version="0.0.5" >
+    <PackageReference Include="IDisposableSourceGenerator" Version="0.0.X" >
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
