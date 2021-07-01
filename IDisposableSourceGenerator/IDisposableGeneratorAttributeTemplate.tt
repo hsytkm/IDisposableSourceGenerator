@@ -15,17 +15,17 @@ namespace IDisposableSourceGenerator
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     internal sealed class IDisposableGeneratorAttribute : Attribute
     {
-        public Type? CompositeDisposableType { get; }
-        public string? CompositeDisposableFieldName { get; }
-        public IDisposableGeneratorOptions Options { get; }
+        internal Type? CompositeDisposableType { get; }
+        internal string? CompositeDisposableFieldName { get; }
+        internal IDisposableGeneratorOptions Options { get; }
 
-        public IDisposableGeneratorAttribute(
+        internal IDisposableGeneratorAttribute(
             Type? compositeDisposableType = null,
             string? compositeDisposableFieldName = null,
             IDisposableGeneratorOptions options = IDisposableGeneratorOptions.None)
         {
             CompositeDisposableType = compositeDisposableType ?? typeof(IDisposableSourceGenerator.SimpleCompositeDisposable);
-            CompositeDisposableFieldName = string.IsNullOrWhiteSpace(compositeDisposableFieldName) ? "_disposables" : compositeDisposableFieldName!;
+            CompositeDisposableFieldName = !string.IsNullOrWhiteSpace(compositeDisposableFieldName) ? compositeDisposableFieldName! : "_disposables";
             Options = options;
         }
     }
