@@ -4,13 +4,14 @@ namespace IDisposableSourceGenerator
 {
     public partial class CodeTemplate
     {
-        private const string DefaultTypeName = "IDisposableSourceGenerator.SimpleCompositeDisposable";
+        private const string DefaultTypeName = "SimpleCompositeDisposable";
         private const string DefaultFieldName = "_disposables";
 
         internal string Namespace { get; set; } = "";
         internal string ClassName { get; }
 
         internal string CompositeDisposableTypeName { get; }
+        internal bool UseDefaultCompositeDisposable { get; }
         internal string CompositeDisposableFieldName { get; }
         internal IDisposableGeneratorOptions Options { get; }
 
@@ -18,11 +19,21 @@ namespace IDisposableSourceGenerator
         {
             ClassName = classDeclaration.GetGenericTypeName();
 
-            CompositeDisposableTypeName = GetTypeName(genArg.CompositeDisposableTypeSymbol?.ToString());
+            var compositeDisposableTypeSymbolName = genArg.CompositeDisposableTypeSymbol?.ToString();
+            if (!string.IsNullOrWhiteSpace(compositeDisposableTypeSymbolName))
+            {
+                CompositeDisposableTypeName = compositeDisposableTypeSymbolName!;
+                UseDefaultCompositeDisposable = false;
+            }
+            else
+            {
+                CompositeDisposableTypeName = DefaultTypeName;
+                UseDefaultCompositeDisposable = true;
+            }
+
             CompositeDisposableFieldName = GetFieldName(genArg.CompositeDisposableFieldName);
             Options = genArg.Options;
 
-            static string GetTypeName(string? s) => !string.IsNullOrWhiteSpace(s) ? s! : DefaultTypeName;
             static string GetFieldName(string? s) => !string.IsNullOrWhiteSpace(s) ? s! : DefaultFieldName;
         }
 
